@@ -18,26 +18,26 @@ import { productRouter } from "./routes/product.routes.js";
 import { cartRouter } from "./routes/cart.routes.js";
 import { productsModel } from "./models/products.model.js";
 import { initializePassport } from "./config/passport.config.js";
+import { SECRET_KEY } from "./utils/jwt.js";
 import { error } from "console";
 
 const app = express();
 const PORT = 5000;
-const SECRET_KEY='S3cr3t'
 
-const mongoUser= 'natyayelenfernandez';
-const mongoPassword= 'Naty191002.'
-const mongoUrl= `mongodb+srv://${mongoUser}:${mongoPassword}@backednaty.7sfpl.mongodb.net/`
+const mongoUser = 'natyayelenfernandez';
+const mongoPassword = 'Naty191002.'
+const mongoUrl = `mongodb+srv://${mongoUser}:${mongoPassword}@backednaty.7sfpl.mongodb.net/`
 
 // Express configuration 
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(cookieParser()); 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve(__dirname, "../public")));
 
 // Session config
 app.use(session({
-    secret: SECRET,
+    secret: SECRET_KEY,
     store: MongoStore.create({
         mongoUrl,
         // ttl: 15
@@ -69,6 +69,25 @@ app.use("/carts", cartRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("*", (req, res) => {
     res.status(404).json({ error: "Route not found" });
+});
+
+app.get("/cookies", (req, res) => {
+    const token = jwt.sign(
+        {
+            id: "abcd",
+            username: "test",
+            role: "admin",
+        },
+        SECRET_KEY,
+        { expiresIn: "5m" }
+    );
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 60, // 1 hour
+    });
+
+    res.json({ message: "Cookie set", token });
 });
 
 app.use(express.static('public'));

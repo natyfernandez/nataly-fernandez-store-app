@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 
-import { SECRET } from "../server.js";
+import { SECRET_KEY } from './../utils/jwt.js';
 
 // "Unauthorized" es un mensaje por defecto de passport-jwt cuando falla la autenticación.
 
@@ -10,7 +10,7 @@ export function initializePassport() {
     "jwt",
     new JWTStrategy(
       {
-        secretOrKey: SECRET,
+        secretOrKey: SECRET_KEY,
         // ExtractJwt.fromExtractors([...]) 👇 permite definir extractores personalizados.
         // cookieExtractor es una función que extrae el token desde una cookie
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
