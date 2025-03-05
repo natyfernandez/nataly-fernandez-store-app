@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Tienda | {{{title}}}</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-wrapper container">
+                <a href="{{homeUrl}}" class="brand-logo">Logo</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="{{homeUrl}}">Home</a></li>
+                    <li><a href="{{productsUrl}}">Products</a></li>
+                    <li><a href="/carts/{{cart}}"><i class="material-icons">shopping_cart</i><span style="position:absolute" class="badgeCart">{{{cartQuantity}}}</span></a></li>
+                    {{#if isSession}}
+                        <li><a href="/profile" class="btn btn-primary"></a></li>
+                    {{else}}
+                        <li><a href="/login" class="btn btn-primary">Iniciar Sesión</a></li>
+                        <li><a href="/register" class="btn btn-success">Registrese</a></li>
+                    {{/if}}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        {{{body}}}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

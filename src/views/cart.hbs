@@ -1,0 +1,27 @@
+<main>
+    <h1>Carrito</h1>
+
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Portada</th>
+                <th>Titulo</th>
+                <th>Precio</th>
+                <th>Category</th>
+                <th>Unidades</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{#each cartItems}}
+            <tr>
+                <td><img src="{{this.product.thumbnail}}" alt="Portada del producto" width="50"></td>
+                <td>{{this.product.title}}</td>
+                <td>{{this.product.price}}</td>
+                <td>{{this.product.category}}</td>
+                <td>{{this.quantity}}</td>
+            </tr>
+            {{/each}}
+    </tbody>
+    </table>
+</main>

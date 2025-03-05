@@ -1,0 +1,14 @@
+i ~ .badgeCart{
+    font-size: 11px;
+    font-weight: 500;
+    position: absolute !important;
+    top: 13px;
+    right: 8px;
+    background-color: red;
+    padding: 3px;
+    height: 15px;
+    width: 15px;
+    border-radius: 25px;
+    line-height: 9px;
+    text-align: center;
+}
