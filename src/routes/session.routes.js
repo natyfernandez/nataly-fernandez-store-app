@@ -1,22 +1,24 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import { userModel } from '../models/user.model.js';
 
-export const sessionRouter = Router()
+export const sessionRouter = Router();
+
+const SECRET_KEY = 's3cr3t';
 
 sessionRouter.post('/login', async (req, res) => {
-
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email y password requeridos' })
+        return res.status(400).json({ message: 'Email y password requeridos' });
     }
 
     try {
-        const user = await userModel.findOne({ email }).lean()
-        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+        const user = await userModel.findOne({ email }).lean();
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
         if (user.password !== password) {
-            return res.status(401).json({ message: 'Pasword inválido' })
+            return res.status(401).json({ message: 'Password inválido' });
         }
 
         req.session.user = {
@@ -24,11 +26,13 @@ sessionRouter.post('/login', async (req, res) => {
             email: user.email,
             first_name: user.first_name,
             last_name: user.last_name
-        }
+        };
+        
+        await req.session.save(); 
 
         const token = jwt.sign(
             {
-                id: "1",
+                id: user._id,
                 email,
                 role: "admin",
             },
@@ -37,46 +41,46 @@ sessionRouter.post('/login', async (req, res) => {
         );
 
         res.cookie("token", token, {
-            maxAge: 60 * 60 * 60,
+            maxAge: 60 * 60 * 1000,
             httpOnly: true,
         });
 
-        res.json({ message: "Login successful", token });
-        res.redirect('/profile')
+        res.redirect('/profile');
+
     } catch (error) {
-
-        res.status(500).json({ message: 'Error interno', error })
-
+        res.status(500).json({ message: 'Error interno', error: error.message });
     }
-
-})
+});
 
 sessionRouter.post('/register', async (req, res) => {
-    const { first_name, last_name, age, email, password } = req.body
-    if (!first_name || !last_name || !age || !email || !password)
-        return res.status(400).json({ message: 'Todos los campos son requeridos' })
+    const { first_name, last_name, age, email, password } = req.body;
+
+    if (!first_name || !last_name || !age || !email || !password) {
+        return res.status(400).json({ message: 'Todos los campos son requeridos' });
+    }
 
     try {
-
         const user = await userModel.create({
             first_name,
             last_name,
             age,
             email,
             password
-        })
+        });
 
         res.redirect('/login')
 
-
     } catch (error) {
-        res.status(500).json({ message: 'Error interno', error })
+        res.status(500).json({ message: 'Error interno', error: error.message });
     }
-
-
-})
+});
 
 sessionRouter.get('/logout', (req, res) => {
-    req.session.destroy()
-    res.redirect('/')
-})
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ message: 'Error al cerrar sesión' });
+        }
+        res.clearCookie("token");
+        res.redirect('/')
+    });
+});

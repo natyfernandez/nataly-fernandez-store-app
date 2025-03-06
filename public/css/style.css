@@ -12,3 +12,6 @@ i ~ .badgeCart{
     line-height: 9px;
     text-align: center;
 }
+form .btn{
+    line-height: 32px !important;
+}
