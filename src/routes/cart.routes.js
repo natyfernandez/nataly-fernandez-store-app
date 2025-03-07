@@ -14,6 +14,7 @@ cartRouter.post("/", async (req, res) => {
 });
 
 cartRouter.get("/:cid", async (req, res) => {
+    const isSession = req.session.user ? true : false
     const { cid } = req.params;
 
     try {
@@ -35,12 +36,12 @@ cartRouter.get("/:cid", async (req, res) => {
         }));
         
         return res.status(200).render("cart", {
+            isSession,
             cart: cart._id,
             cartQuantity,
             cartItems,
             title: "Carrito",
             homeUrl: "/",
-            productsUrl: "/realtimeproducts"
         });
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el carrito", error: error.message });
@@ -49,6 +50,7 @@ cartRouter.get("/:cid", async (req, res) => {
 
 
 cartRouter.post("/:cid/product/:pid", async (req, res) => {
+    const isSession = req.session.user ? true : false
     const { cid, pid } = req.params;
 
     try {
@@ -74,15 +76,18 @@ cartRouter.post("/:cid/product/:pid", async (req, res) => {
 
         const updatedCart = await cartsModel.findOne({_id: cid}).populate("products.product");
         const cartQuantity = updatedCart.products.reduce((acc, item) => acc + item.quantity, 0);
-        const cartProducts = updatedCart.products.map(item => item.product);
+        const cartItems = updatedCart.products.map(item => ({
+            product: item.product,
+            quantity: item.quantity
+        }));
 
         res.status(200).render("cart", {
+            isSession,
             cart: updatedCart._id,
-            cartProducts,
+            cartItems,
             cartQuantity, 
             title: "Carrito",
             homeUrl: "/",
-            productsUrl: "/realtimeproducts"
         });
 
     } catch (error) {
@@ -133,6 +138,52 @@ cartRouter.put("/:cid/products/:pid", async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: "Error al actualizar el producto en el carrito", error: error.message });
+    }
+});
+
+cartRouter.delete("/:cid/product/:pid", async (req, res) => {
+    const isSession = req.session.user ? true : false;
+    const { cid, pid } = req.params;
+
+    try {
+        const cart = await cartsModel.findOne({ _id: cid });
+        if (!cart) {
+            return res.status(404).json({ message: "Carrito no encontrado" });
+        }
+
+        const productIndex = cart.products.findIndex(item => item.product.toString() === pid);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: "El producto no está en el carrito" });
+        }
+
+        if (cart.products[productIndex].quantity > 1) {
+            cart.products[productIndex].quantity -= 1;
+        } else {
+            cart.products.splice(productIndex, 1);
+        }
+
+        await cart.save();
+
+        const updatedCart = await cartsModel.findOne({ _id: cid }).populate("products.product");
+        const cartQuantity = updatedCart.products.reduce((acc, item) => acc + item.quantity, 0);
+        const cartItems = updatedCart.products.map(item => ({
+            product: item.product,
+            quantity: item.quantity
+        }));
+
+        res.status(200).render("cart", {
+            isSession,
+            cart: updatedCart._id,
+            cartItems,
+            cartQuantity, 
+            title: "Carrito",
+            homeUrl: "/",
+        });
+
+    } catch (error) {
+        console.error("Error al eliminar el producto del carrito:", error);
+        res.status(500).json({ message: "Error al eliminar el producto del carrito", error: error.message });
     }
 });
 

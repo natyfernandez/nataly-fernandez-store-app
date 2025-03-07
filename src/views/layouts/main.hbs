@@ -18,9 +18,8 @@
                 <a href="{{homeUrl}}" class="brand-logo">Logo</a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li><a href="{{homeUrl}}">Home</a></li>
-                    <li><a href="{{productsUrl}}">Products</a></li>
                     {{#if isSession}}
-                        <li><a href="/profile"></a><i class="material-icons">person</i></li>
+                        <li><a href="/profile"><i class="material-icons">person</i></a></li>
                     {{else}}
                         <li><a href="/login">Iniciar Sesión</a></li>
                         <li><a href="/register">Registrese</a></li>

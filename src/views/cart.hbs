@@ -20,8 +20,15 @@
                 <td>{{this.product.price}}</td>
                 <td>{{this.product.category}}</td>
                 <td>{{this.quantity}}</td>
+                <td>
+                    <form class="delete-product-in-cart" data-cart-id="{{../cart}}" data-product-id="{{this.product._id}}" enctype="multipart/form-data">
+                        <button type="submit"><i class="material-icons">delete_forever</i></button>
+                    </form>
+                </td>
             </tr>
             {{/each}}
-    </tbody>
+        </tbody>
     </table>
 </main>
+
+<script src="/js/cart.js"></script>

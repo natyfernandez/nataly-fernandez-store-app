@@ -2,15 +2,14 @@ import jwt from 'jsonwebtoken';
 import { Router } from 'express';
 
 const router = Router()
-const JWT_SECRET='jwt_secreto'
-
+const SECRET_KEY = 's3cr3t';
 
 const authenticate = (req, res, next) => {
   const token = req.signedCookies.currentUser;
   if (!token) return res.redirect("/users/login");
 
   try {
-    req.user = jwt.verify(token, JWT_SECRET);
+    req.user = jwt.verify(token, SECRET_KEY);
     next();
   } catch {
     res.redirect("/users/login");

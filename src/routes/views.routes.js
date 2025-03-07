@@ -16,15 +16,15 @@ viewsRoutes.get("/", async (req, res) => {
         let cartQuantity = 0;
 
         if (cartId) {
-            cart = await cartsModel.findOne({_id: cartId});
+            cart = await cartsModel.findOne({ _id: cartId });
             if (cart && cart.products.length > 0) {
                 cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
             }
         } else {
             cart = await cartsModel.create({});
-            res.cookie('cartId', cart._id, { httpOnly: true, secure: false, sameSite: 'lax' }); 
+            res.cookie('cartId', cart._id, { httpOnly: true, secure: false, sameSite: 'lax' });
         }
-        res.status(200).render("home", {isSession, cart: cart._id, products, cartQuantity, title: "Home", homeUrl: "#", productsUrl: "/realtimeproducts"});
+        res.status(200).render("home", { isSession, cart: cart._id, products, cartQuantity, title: "Home", homeUrl: "#" });
     } catch (error) {
         console.error("Error al obtener los productos o manejar el carrito:", error);
         return res.status(500).json({
@@ -34,24 +34,59 @@ viewsRoutes.get("/", async (req, res) => {
     }
 });
 
-viewsRoutes.get('/login', (req,res)=>{
+viewsRoutes.get('/login', async (req, res) => {
     const isSession = req.session.user ? true : false
+    if (isSession) return res.redirect('/profile')
 
-    if(isSession) return res.redirect('/profile')
+    const cartId = req.cookies.cartId;
 
-        res.render('login', {title: 'Iniciar sesión'})
+    let cart;
+    let cartQuantity = 0;
 
+    if (cartId) {
+        cart = await cartsModel.findOne({ _id: cartId });
+        if (cart && cart.products.length > 0) {
+            cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
+        }
+    }
+
+    res.render('login', { isSession, cart: cart._id, cartQuantity, title: 'Iniciar sesión', homeUrl: "/" })
 })
 
-viewsRoutes.get('/register', (req,res)=>{
+viewsRoutes.get('/register', async (req, res) => {
     const isSession = req.session.user ? true : false
-    if(isSession) return res.redirect('/profile')
-    res.render('register', {title: 'Registro'})
+    if (isSession) return res.redirect('/profile')
+
+    const cartId = req.cookies.cartId;
+
+    let cart;
+    let cartQuantity = 0;
+
+    if (cartId) {
+        cart = await cartsModel.findOne({ _id: cartId });
+        if (cart && cart.products.length > 0) {
+            cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
+        }
+    }
+
+    res.render('register', { isSession, cart: cart._id, cartQuantity, title: 'Registro', homeUrl: "/" })
 })
 
-viewsRoutes.get('/profile', (req,res)=>{
+viewsRoutes.get('/profile', async (req, res) => {
     const isSession = req.session.user ? true : false
-    if(!isSession) return res.redirect('/login')
+    if (!isSession) return res.redirect('/login')
 
-        res.render('profile', {title:'Perfil', user: req.session.user})
+    const cartId = req.cookies.cartId;
+
+    let cart;
+    let cartQuantity = 0;
+
+    if (cartId) {
+        cart = await cartsModel.findOne({ _id: cartId });
+        if (cart && cart.products.length > 0) {
+            cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
+        }
+    }
+
+    res.render('profile', { isSession, cart: cart._id, cartQuantity, title: 'Perfil', homeUrl: "/", user: req.session.user })
 })

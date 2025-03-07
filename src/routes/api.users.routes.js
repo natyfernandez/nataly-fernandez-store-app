@@ -3,21 +3,19 @@ import jwt from 'jsonwebtoken';
 import { userModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
-// import { verifyPassword } from '../Utils/utils.js';
-const router= Router()
+import { verifyPassword } from '../utils/password.utils.js';
 
-const JWT_SECRET='jwt_secreto'
+const router= Router()
+const SECRET_KEY = 's3cr3t';
 
 // Crear usuario
 router.post("/", async (req, res) => {
   // const {password} = req.body
   try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    req.body.password = hashedPassword;
 
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-  req.body.password = hashedPassword;
-
-  const user = await userModel.create(req.body);
+    const user = await userModel.create(req.body);
 
     res.status(201).json({ message: "Usuario creado", user });
   } catch (err) {
@@ -27,7 +25,7 @@ router.post("/", async (req, res) => {
 
 // Leer usuarios
 router.get("/", async (req, res) => {
-  const users = await userModel.find({}, "-password"); // {} significa que no se aplica ningún filtro, por lo que se devuelven todos los documentos y  se excluya el campo password de los documentos que se devuelven.
+  const users = await userModel.find({}, "-password"); 
   res.json(users);
 });
 
@@ -68,16 +66,16 @@ router.post("/login", async (req, res) => {
   }
 
   // ⛔⛔ HACEN ALUMNOS, CREAR CARPETA UTILS CON UTILS.JS Y FUNCION "verifyPassword"
-  // const isPasswordCorrect = await verifyPassword(password, user.password);
+  const isPasswordCorrect = await verifyPassword(password, user.password);
 
-  // if (!isPasswordCorrect ){
-  //   return res.status(400).send({
-  //     status: 'error',
-  //     message: 'Password incorrecto'
-  // });
-  // }
+  if (!isPasswordCorrect ){
+    return res.status(400).send({
+      status: 'error',
+      message: 'Password incorrecto'
+  });
+  }
   
-    const token = jwt.sign({ id: user._id, role: user.role, email:user.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, role: user.role, email:user.email }, SECRET_KEY, {
       expiresIn: "1h",
     });
     
