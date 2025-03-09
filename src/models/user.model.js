@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
@@ -8,6 +6,8 @@ const userSchema = new Schema({
   age: { type: Number, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  cart: { type: Schema.Types.ObjectId, ref: "carts" },
+  role: { type: String, default: "user" },
 });
 
 export const userModel = model("user", userSchema);
