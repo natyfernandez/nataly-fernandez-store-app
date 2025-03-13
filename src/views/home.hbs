@@ -14,9 +14,13 @@
                     <p>{{this.description}}</p>
                 </div>
                 <div class="card-action">
-                    <form class="add-to-cart-form" action="/carts/{{../cart}}/product/{{this._id}}" enctype="multipart/form-data" method="POST">
-                        <button type="submit">Agregar al Carrito</button>
-                    </form>
+                    {{#if ../isSession}}
+                        <form class="add-to-cart-form" action="/carts/{{../cartUser}}/product/{{this._id}}" enctype="multipart/form-data" method="POST">
+                            <button class="btn waves-effect waves-light" type="submit">Agregar al Carrito</button>
+                        </form>
+                    {{else}}
+                        <a class="btn waves-effect waves-light" href="">Ver producto</a>
+                    {{/if}}
                 </div>
             </div>
         </div> 

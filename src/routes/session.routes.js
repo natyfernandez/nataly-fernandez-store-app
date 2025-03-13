@@ -1,11 +1,43 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/user.model.js";
+import { cartsModel } from "../models/carts.model.js"; 
 import { hashPassword, verifyPassword } from "../utils/password.utils.js";
 
 export const sessionRouter = Router();
 const SECRET_KEY = "s3cr3t"; 
+const CART_EXPIRATION_DAYS = 20;
 
+// REGISTRO
+sessionRouter.post("/register", async (req, res) => {
+    const { first_name, last_name, age, email, password } = req.body;
+
+    if (!first_name || !last_name || !age || !email || !password) {
+        return res.status(400).json({ message: "Todos los campos son requeridos" });
+    }
+
+    try {
+        const hashedPassword = await hashPassword(password);
+
+        // 🔹 Crear carrito vacío para el usuario
+        const newCart = await cartsModel.create({ products: [] });
+
+        const user = await userModel.create({
+            first_name,
+            last_name,
+            age,
+            email,
+            password: hashedPassword,
+            cart: newCart._id, // Asignar carrito al usuario
+        });
+
+        res.redirect("/login");
+    } catch (error) {
+        res.status(500).json({ message: "Error interno", error: error.message });
+    }
+});
+
+// LOGIN
 sessionRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -28,15 +60,16 @@ sessionRouter.post("/login", async (req, res) => {
             first_name: user.first_name,
             last_name: user.last_name,
             age: user.age,
+            cart: user.cart, // Asignar carrito del usuario
         };
 
-        await req.session.save(); 
+        await req.session.save();
 
         const token = jwt.sign(
             {
                 id: user._id,
                 email,
-                role: "admin",
+                role: "user",
             },
             SECRET_KEY,
             { expiresIn: "5m" }
@@ -53,46 +86,23 @@ sessionRouter.post("/login", async (req, res) => {
     }
 });
 
-sessionRouter.post("/register", async (req, res) => {
-    const { first_name, last_name, age, email, password } = req.body;
-
-    if (!first_name || !last_name || !age || !email || !password) {
-        return res.status(400).json({ message: "Todos los campos son requeridos" });
-    }
+// VACIAR EL CARRITO CADA 20 DÍAS
+const clearExpiredCarts = async () => {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() - CART_EXPIRATION_DAYS);
 
     try {
-        const hashedPassword = await hashPassword(password);
-
-        const user = await userModel.create({
-            first_name,
-            last_name,
-            age,
-            email,
-            password: hashedPassword,
-        });
-
-        res.redirect("/login");
+        await cartsModel.updateMany({}, { $set: { products: [] } }); // Vaciar carritos sin eliminarlos
+        console.log("🛒 Carritos vaciados después de 20 días");
     } catch (error) {
-        res.status(500).json({ message: "Error interno", error: error.message });
+        console.error("❌ Error al vaciar carritos:", error.message);
     }
-});
+};
 
-sessionRouter.post("/restore-password", async (req, res) => {
-    const { email, password } = req.body;
+// Ejecutar limpieza de carritos cada 24 horas
+setInterval(clearExpiredCarts, 24 * 60 * 60 * 1000);
 
-    try {
-        const user = await userModel.findOne({ email }).lean();
-        if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-
-        const hashedPassword = await hashPassword(password);
-        await userModel.updateOne({ _id: user._id }, { password: hashedPassword });
-
-        res.redirect("/login");
-    } catch (error) {
-        res.status(500).json({ message: "Error interno", error: error.message });
-    }
-});
-
+// LOGOUT
 sessionRouter.get("/logout", (req, res) => {
     req.session.destroy(err => {
         if (err) {

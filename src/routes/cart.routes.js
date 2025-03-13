@@ -4,12 +4,20 @@ import { productsModel } from "../models/products.model.js";
 
 export const cartRouter = Router();
 
-cartRouter.post("/", async (req, res) => {    
+cartRouter.get("/", async (req, res) => {    
+    const isSession = req.session.user ? true : false
+    const cartQuantity = 0;
+    const cart = null;
     try {
-        const newCart = await cartsModel.create({});
-        res.status(201).json(newCart);
+        res.status(200).render("cart", {
+            isSession,
+            cartUser: cart,
+            cartQuantity,
+            title: "Carrito",
+            homeUrl: "/",
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error al crear el carrito" });
+        res.status(500).json({ message: "Error al visitar el carrito" });
     }
 });
 
@@ -37,7 +45,7 @@ cartRouter.get("/:cid", async (req, res) => {
         
         return res.status(200).render("cart", {
             isSession,
-            cart: cart._id,
+            cartUser: cart._id,
             cartQuantity,
             cartItems,
             title: "Carrito",
@@ -83,7 +91,7 @@ cartRouter.post("/:cid/product/:pid", async (req, res) => {
 
         res.status(200).render("cart", {
             isSession,
-            cart: updatedCart._id,
+            cartUser: updatedCart._id,
             cartItems,
             cartQuantity, 
             title: "Carrito",
@@ -128,7 +136,7 @@ cartRouter.put("/:cid/products/:pid", async (req, res) => {
         const cartQuantity = updatedCart.products.reduce((acc, item) => acc + item.quantity, 0);
 
         res.status(200).render("cart", {
-            cart: updatedCart._id,
+            cartUser: updatedCart._id,
             cartQuantity,
             cartProducts: updatedCart.products.map(item => item.product),
             title: "Carrito",
@@ -174,7 +182,7 @@ cartRouter.delete("/:cid/product/:pid", async (req, res) => {
 
         res.status(200).render("cart", {
             isSession,
-            cart: updatedCart._id,
+            cartUser: updatedCart._id,
             cartItems,
             cartQuantity, 
             title: "Carrito",

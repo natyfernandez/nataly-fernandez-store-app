@@ -1,6 +1,8 @@
 <main>
     <h1>Carrito</h1>
 
+    {{#if isSession}}
+    {{#if cartItems}}
     <table class="striped">
         <thead>
             <tr>
@@ -21,7 +23,7 @@
                 <td>{{this.product.category}}</td>
                 <td>{{this.quantity}}</td>
                 <td>
-                    <form class="delete-product-in-cart" data-cart-id="{{../cart}}" data-product-id="{{this.product._id}}" enctype="multipart/form-data">
+                    <form class="delete-product-in-cart" data-cart-id="{{../cartUser}}" data-product-id="{{this.product._id}}" enctype="multipart/form-data">
                         <button type="submit"><i class="material-icons">delete_forever</i></button>
                     </form>
                 </td>
@@ -29,6 +31,12 @@
             {{/each}}
         </tbody>
     </table>
+    {{else}}
+        <p>Carrito vacio <a href="/">agrega productos</a></p>
+    {{/if}}
+    {{else}}
+        <p>Debes logearte para agregar productos al carrito</p>
+    {{/if}}
 </main>
 
 <script src="/js/cart.js"></script>

@@ -2,29 +2,47 @@ import { Router } from "express";
 import { productsModel } from "../models/products.model.js";
 import { cartsModel } from "../models/carts.model.js";
 
-export const viewsRoutes = Router()
+export const viewsRoutes = Router();
 
 viewsRoutes.get("/", async (req, res) => {
-    const isSession = req.session.user ? true : false
+    const isSession = req.session.user ? true : false;
     const { page = 1, limit = 6 } = req.query;
 
     try {
-        const cartId = req.cookies.cartId;
-        const products = await productsModel.paginate({}, { page: Number(page), limit: Number(limit) });
-
-        let cart;
+        let cart = null;
         let cartQuantity = 0;
 
-        if (cartId) {
-            cart = await cartsModel.findOne({ _id: cartId });
-            if (cart && cart.products.length > 0) {
+        if (isSession) {
+            cart = await cartsModel.findOne({ user: req.session.user._id });
+
+            if (!cart) {
+                cart = await cartsModel.create({ user: req.session.user._id, products: [] });
+            }
+
+            // Vaciar el carrito si han pasado más de 20 días desde su última actualización
+            const lastUpdate = cart.updatedAt || cart.createdAt;
+            const twentyDaysAgo = new Date();
+            twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
+
+            if (new Date(lastUpdate) < twentyDaysAgo) {
+                cart.products = [];
+                await cart.save();
+            }
+
+            if (cart.products.length > 0) {
                 cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
             }
-        } else {
-            cart = await cartsModel.create({});
-            res.cookie('cartId', cart._id, { httpOnly: true, secure: false, sameSite: 'lax' });
         }
-        res.status(200).render("home", { isSession, cart: cart._id, products, cartQuantity, title: "Home", homeUrl: "#" });
+
+        res.status(200).render("home", { 
+            isSession, 
+            cartUser: isSession ? cart._id : null, 
+            products: await productsModel.paginate({}, { page: Number(page), limit: Number(limit) }), 
+            cartQuantity, 
+            title: "Home", 
+            homeUrl: "#" 
+        });
+
     } catch (error) {
         console.error("Error al obtener los productos o manejar el carrito:", error);
         return res.status(500).json({
@@ -34,59 +52,52 @@ viewsRoutes.get("/", async (req, res) => {
     }
 });
 
-viewsRoutes.get('/login', async (req, res) => {
-    const isSession = req.session.user ? true : false
-    if (isSession) return res.redirect('/profile')
+// Middleware para verificar el carrito del usuario logueado en cada request
+viewsRoutes.use(async (req, res, next) => {
+    if (req.session.user) {
+        let cart = await cartsModel.findOne({ user: req.session.user._id });
 
-    const cartId = req.cookies.cartId;
+        if (!cart) {
+            cart = await cartsModel.create({ user: req.session.user._id, products: [] });
+        }
 
-    let cart;
+        // Vaciar el carrito si han pasado más de 20 días desde la última actualización
+        const lastUpdated = new Date(cart.updatedAt);
+        const now = new Date();
+        const diffDays = Math.floor((now - lastUpdated) / (1000 * 60 * 60 * 24));
+
+        if (diffDays >= 20) {
+            await cartsModel.updateOne({ _id: cart._id }, { products: [] });
+        }
+    }
+    next();
+});
+
+// Aplicación en las vistas de login, register y profile
+viewsRoutes.get(['/login', '/register', '/profile'], async (req, res) => {
+    const isSession = req.session.user ? true : false;
+    if (req.path === '/profile' && !isSession) return res.redirect('/login');
+
+    let cart = null;
     let cartQuantity = 0;
+    if (isSession) {
+        cart = await cartsModel.findOne({ user: req.session.user._id });
 
-    if (cartId) {
-        cart = await cartsModel.findOne({ _id: cartId });
-        if (cart && cart.products.length > 0) {
+        if (!cart) {
+            cart = await cartsModel.create({ user: req.session.user._id, products: [] });
+        }
+
+        if (cart.products.length > 0) {
             cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
         }
     }
 
-    res.render('login', { isSession, cart: cart._id, cartQuantity, title: 'Iniciar sesión', homeUrl: "/" })
-})
-
-viewsRoutes.get('/register', async (req, res) => {
-    const isSession = req.session.user ? true : false
-    if (isSession) return res.redirect('/profile')
-
-    const cartId = req.cookies.cartId;
-
-    let cart;
-    let cartQuantity = 0;
-
-    if (cartId) {
-        cart = await cartsModel.findOne({ _id: cartId });
-        if (cart && cart.products.length > 0) {
-            cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
-        }
-    }
-
-    res.render('register', { isSession, cart: cart._id, cartQuantity, title: 'Registro', homeUrl: "/" })
-})
-
-viewsRoutes.get('/profile', async (req, res) => {
-    const isSession = req.session.user ? true : false
-    if (!isSession) return res.redirect('/login')
-
-    const cartId = req.cookies.cartId;
-
-    let cart;
-    let cartQuantity = 0;
-
-    if (cartId) {
-        cart = await cartsModel.findOne({ _id: cartId });
-        if (cart && cart.products.length > 0) {
-            cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
-        }
-    }
-
-    res.render('profile', { isSession, cart: cart._id, cartQuantity, title: 'Perfil', homeUrl: "/", user: req.session.user })
-})
+    res.render(req.path.substring(1), { 
+        isSession, 
+        cartUser: isSession ? cart._id : null, 
+        cartQuantity, 
+        title: req.path === '/profile' ? 'Perfil' : req.path === '/login' ? 'Iniciar sesión' : 'Registro', 
+        homeUrl: "/", 
+        user: isSession ? req.session.user : null 
+    });
+});
