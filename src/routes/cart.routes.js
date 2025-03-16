@@ -22,7 +22,15 @@ cartRouter.get("/", async (req, res) => {
 });
 
 cartRouter.get("/:cid", async (req, res) => {
-    const isSession = req.session.user ? true : false
+    const token = req.cookies.jwt;
+    if (!token) return res.status(200).render("cart", {
+        isSession: false,
+        cartUser: cart._id,
+        cartQuantity,
+        cartItems,
+        title: "Carrito",
+        homeUrl: "/",
+    });
     const { cid } = req.params;
 
     try {
@@ -44,7 +52,7 @@ cartRouter.get("/:cid", async (req, res) => {
         }));
         
         return res.status(200).render("cart", {
-            isSession,
+            isSession: true,
             cartUser: cart._id,
             cartQuantity,
             cartItems,
@@ -58,7 +66,15 @@ cartRouter.get("/:cid", async (req, res) => {
 
 
 cartRouter.post("/:cid/product/:pid", async (req, res) => {
-    const isSession = req.session.user ? true : false
+    const token = req.cookies.jwt;
+    if (!token) return res.status(200).render("cart", {
+        isSession: false,
+        cartUser: cart._id,
+        cartQuantity,
+        cartItems,
+        title: "Carrito",
+        homeUrl: "/",
+    });
     const { cid, pid } = req.params;
 
     try {
@@ -90,7 +106,7 @@ cartRouter.post("/:cid/product/:pid", async (req, res) => {
         }));
 
         res.status(200).render("cart", {
-            isSession,
+            isSession: true,
             cartUser: updatedCart._id,
             cartItems,
             cartQuantity, 

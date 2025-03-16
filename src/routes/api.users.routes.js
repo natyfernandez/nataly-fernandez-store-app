@@ -5,12 +5,10 @@ import bcrypt from 'bcrypt';
 import { Router } from 'express';
 import { verifyPassword } from '../utils/password.utils.js';
 
-const router= Router()
-const SECRET_KEY = 's3cr3t';
+const apiUserRouter= Router()
 
 // Crear usuario
-router.post("/", async (req, res) => {
-  // const {password} = req.body
+apiUserRouter.post("/", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
@@ -24,16 +22,15 @@ router.post("/", async (req, res) => {
 });
 
 // Leer usuarios
-router.get("/", async (req, res) => {
+apiUserRouter.get("/", async (req, res) => {
   const users = await userModel.find({}, "-password"); 
   res.json(users);
 });
 
 // Actualizar usuario
-router.put("/:id", async (req, res) => {
+apiUserRouter.put("/:id", async (req, res) => {
   try {
     const user = await userModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    // new true: Devuelve el documento actualizado.
     res.json(user);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -41,7 +38,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Eliminar usuario
-router.delete("/:id", async (req, res) => {
+apiUserRouter.delete("/:id", async (req, res) => {
 
   try {
     await userModel.findByIdAndDelete(req.params.id);
@@ -57,7 +54,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Login
-router.post("/login", async (req, res) => {
+apiUserRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email }).lean();
 
@@ -65,7 +62,6 @@ router.post("/login", async (req, res) => {
     return res.redirect("/users/login?error=Login falló!");
   }
 
-  // ⛔⛔ HACEN ALUMNOS, CREAR CARPETA UTILS CON UTILS.JS Y FUNCION "verifyPassword"
   const isPasswordCorrect = await verifyPassword(password, user.password);
 
   if (!isPasswordCorrect ){
@@ -75,13 +71,12 @@ router.post("/login", async (req, res) => {
   });
   }
   
-    const token = jwt.sign({ id: user._id, role: user.role, email:user.email }, SECRET_KEY, {
+    const token = jwt.sign({ id: user._id, role: user.role, email:user.email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
     
     res.cookie("currentUser", token, { httpOnly: true, signed: true });
     res.redirect("/users/current");
-  
 });
 
-export default router;
+export default apiUserRouter;

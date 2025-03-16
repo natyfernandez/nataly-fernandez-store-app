@@ -12,34 +12,32 @@ import handlebars from 'express-handlebars';
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 
 import { __dirname } from "./dirname.js";
-import userRoute from './routes/users.routes.js';
-import apiUserRoute from './routes/api.users.routes.js';
+import userRouter from './routes/users.routes.js';
+import apiUserRouter from './routes/api.users.routes.js';
 import { viewsRoutes } from "./routes/views.routes.js";
 import { cartRouter } from "./routes/cart.routes.js";
 import { sessionRouter } from './routes/session.routes.js';
 import { productRouter } from "./routes/product.routes.js";
 import { initializePassport } from "./config/passport.config.js";
 import { authenticate, generateToken, verifyToken } from "./utils/jwt.js";
-import { error } from "console";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = 5000;
-const SECRET_KEY = 's3cr3t';
 
-const mongoUser = 'natyayelenfernandez';
-const mongoPassword = 'Naty191002.'
-const mongoUrl = `mongodb+srv://${mongoUser}:${mongoPassword}@backednaty.7sfpl.mongodb.net/`
+const mongoUrl = `mongodb+srv://${process.env.mongoUser}:${process.env.mongoPassword}@backednaty.7sfpl.mongodb.net/`
 
 // Middleware
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(SECRET_KEY));
+app.use(cookieParser(process.env.SECRET_KEY));
 app.use(express.static(path.resolve(__dirname, "../public")));
 
 // Session config
 app.use(session({
-    secret: SECRET_KEY,
+    secret: process.env.SECRET_KEY,
     store: MongoStore.create({
         mongoUrl,
     }),
@@ -64,15 +62,26 @@ app.set("views", path.resolve(__dirname, "./views"));
 
 // Routes
 app.use("/", viewsRoutes);
-app.use("/users", userRoute);
+app.use("/users", userRouter);
 app.use("/carts", cartRouter);
-app.use("/api/users", apiUserRoute);
+app.use("/api/users", apiUserRouter);
 app.use("/api/products", productRouter);
 app.use("/api/sessions", sessionRouter);
+
+// Vista de usuario actual
+userRouter.get("/current", authenticate, (req, res) => {
+    res.render("current", { user: req.user });
+});
+
+app.get("/admin", authenticate, (req, res) => {
+    res.json({ message: 'Ruta de admin' });
+});
+
 app.use("*", (req, res) => {
     res.status(404).json({ error: "Route not found" });
 });
 
+// Configuración de cookies
 app.get("/cookies", (req, res) => {
     const token = jwt.sign(
         {
@@ -80,7 +89,7 @@ app.get("/cookies", (req, res) => {
             username: "test",
             role: "admin",
         },
-        SECRET_KEY,
+        process.env.SECRET_KEY,
         { expiresIn: "5m" }
     );
 
@@ -92,16 +101,6 @@ app.get("/cookies", (req, res) => {
     res.json({ message: "Cookie set", token });
 });
 
-app.get('/current', passport.authenticate('jwt', {session:false}),(req,res)=>{
-  res.json({message: req.user})
-})
-
-app.get('/admin',passport.authenticate('jwt', {session:false}),(req,res)=>{
-  res.json({message:'ruta admin'})
-} )
-
-app.use(express.static('public'));
-
 // Mongo Connection
 connect(mongoUrl)
     .then(() => console.log("MongoDB conectado"))
@@ -109,4 +108,4 @@ connect(mongoUrl)
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-})
+});

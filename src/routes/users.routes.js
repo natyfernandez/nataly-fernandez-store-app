@@ -1,15 +1,14 @@
 import jwt from 'jsonwebtoken';
 import { Router } from 'express';
 
-const router = Router()
-const SECRET_KEY = 's3cr3t';
+const userRouter = Router()
 
 const authenticate = (req, res, next) => {
-  const token = req.signedCookies.currentUser;
+  const token = req.cookies.jwt;
   if (!token) return res.redirect("/users/login");
 
   try {
-    req.user = jwt.verify(token, SECRET_KEY);
+    req.user = jwt.verify(token, process.env.SECRET_KEY);
     next();
   } catch {
     res.redirect("/users/login");
@@ -17,21 +16,21 @@ const authenticate = (req, res, next) => {
 };
 
 // Vista de login
-router.get("/login", (req, res) => {
-  if (req.signedCookies.currentUser) return res.redirect("/users/current");
+userRouter.get("/login", (req, res) => {
+  if (req.cookies.jwt) return res.redirect("/users/current");
   
   res.render("login");
 });
 
 // Vista de usuario actual
-router.get("/current", authenticate, (req, res) => {
+userRouter.get("/current", authenticate, (req, res) => {
   res.render("current", { user: req.user });
 });
 
-router.get("/logout", (req, res) => {
-    res.clearCookie("currentUser");
+userRouter.get("/logout", (req, res) => {
+    res.clearCookie("jwt");
     res.redirect("/users/login");
   });
   
 
-export default router;
+export default userRouter;
