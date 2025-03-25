@@ -13,11 +13,6 @@ routes.use("/users", userRouter);
 routes.use("/carts", cartRouter);
 routes.use("/api", apiRoutes);
 
-// Vista de usuario actual
-routes.get("/current", authenticate, (req, res) => {
-    res.render("current", { user: req.user });
-});
-
 routes.get("/admin", authenticate, (req, res) => {
     res.json({ message: 'Ruta de admin' });
 });

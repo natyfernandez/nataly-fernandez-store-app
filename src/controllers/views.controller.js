@@ -2,14 +2,15 @@ import { cartService } from './../services/cart.service.js';
 import { productService } from "../services/product.service.js";
 
 import { verifyToken } from "../utils/jwt.js";
+import { userService } from '../services/user.service.js';
 
 class ViewsController {
     async home(req, res) {
-        const token = req.cookies.jwt;
-        let isSession = false;
-        let cartQuantity = 0;
-
         try {
+            const token = req.cookies.jwt;
+            let isSession = false;
+            let cartQuantity = 0;
+
             let cart = null;
 
             if (token) {
@@ -76,6 +77,7 @@ class ViewsController {
         const token = req.cookies.jwt;
         const decoded = verifyToken(token);
 
+        let userData = await userService.getUserByEmail({ email: decoded.email });
         let cart = await cartService.getCartByUser({ user: decoded._id });
 
         if (!cart) {
@@ -92,7 +94,7 @@ class ViewsController {
             cartQuantity,
             title: "Perfil",
             homeUrl: "/",
-            user: decoded
+            user: userData
         });
     }
 }

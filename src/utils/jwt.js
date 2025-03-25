@@ -19,7 +19,7 @@ export function verifyToken(token) {
 }
 
 export function authenticate(req, res, next) {
-    const token = req.cookies.jwt; 
+    const token = req.cookies.jwt;
 
     if (!token) {
         return res.status(401).json({
@@ -33,11 +33,14 @@ export function authenticate(req, res, next) {
         next();
     } catch (error) {
         if (error.message === "Token expirado") {
-            res.status(401).json({
-                error: "Sesión expirada, inicia sesión de nuevo",
+            res.status(401).render("session-expired", {
+                isSession: false,
+                cartUser: null,
+                cartQuantity: 0,
+                title: "Sesión expirada",
+                homeUrl: "#"
             });
             res.clearCookie("jwt");
-            res.redirect("/");
         }
 
         return res.status(401).json({
