@@ -1,7 +1,6 @@
 import multer from "multer";
 import path from 'path';
 import { __dirname } from '../dirname.js';
-import { timeEnd } from "console";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

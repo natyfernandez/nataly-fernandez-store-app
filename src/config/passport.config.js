@@ -1,12 +1,14 @@
 import passport from "passport";
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 
+import { CONFIG } from "./config.js";
+
 export function initializePassport() {
   passport.use(
     "jwt",
     new JWTStrategy(
       {
-        secretOrKey: process.env.SECRET_KEY,
+        secretOrKey: CONFIG.SECRET_KEY,
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
       },
       (payload, done) => {

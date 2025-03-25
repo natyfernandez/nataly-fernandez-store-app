@@ -14,11 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     window.location.href = `/carts/${cartId}/`;
                 } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message}`);
+                    const errorData = await response.text(); // Intentamos leerlo como texto
+                    alert(`Error: ${errorData}`);
                 }
             } catch (error) {
-                console.error("Error al eliminar el producto:", error);
                 alert("Hubo un problema al eliminar el producto.");
             }
         });

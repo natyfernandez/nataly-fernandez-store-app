@@ -1,36 +1,12 @@
-import jwt from 'jsonwebtoken';
 import { Router } from 'express';
 
-const userRouter = Router()
+import { userController } from './../controllers/user.controller.js';
+import { authenticateMiddleware } from '../middlewares/authenticate.middleware.js';
 
-const authenticate = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.redirect("/users/login");
+export const userRouter = Router();
 
-  try {
-    req.user = jwt.verify(token, process.env.SECRET_KEY);
-    next();
-  } catch {
-    res.redirect("/users/login");
-  }
-};
+userRouter.get("/login", userController.login)
 
-// Vista de login
-userRouter.get("/login", (req, res) => {
-  if (req.cookies.jwt) return res.redirect("/users/current");
-  
-  res.render("login");
-});
+userRouter.get("/current", authenticateMiddleware, userController.current)
 
-// Vista de usuario actual
-userRouter.get("/current", authenticate, (req, res) => {
-  res.render("current", { user: req.user });
-});
-
-userRouter.get("/logout", (req, res) => {
-    res.clearCookie("jwt");
-    res.redirect("/users/login");
-  });
-  
-
-export default userRouter;
+userRouter.get("/logout", userController.logout)
