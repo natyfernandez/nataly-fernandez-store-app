@@ -6,7 +6,7 @@ class ProductController {
     async getAllProducts(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;
-            const products = await productService.getAllProducts(page, limit);
+            const products = await productService.getAllProducts({page, limit});
             return res.status(200).json(products);
         } catch (error) {
             return res.status(500).json({ message: 'Error al obtener los productos' });
@@ -16,13 +16,8 @@ class ProductController {
     async getProductById(req, res) {
         try {
             const { id } = req.params;
-            const isValidId = isValidObjectId(id);
 
-            if (!isValidId) {
-                return res.status(400).json({ message: "Invalid ID" })
-            }
-
-            const products = await productService.getProductById(id);
+            const products = await productService.getProductById({id});
             res.status(200).json(products);
         } catch (error) {
             res.status(500).json({ message: 'Error al obtener el producto' });
@@ -61,11 +56,6 @@ class ProductController {
     async updateProduct(req, res) {
         try {
             const { id } = req.params;
-            const isValidId = isValidObjectId(id);
-    
-            if (!isValidId) {
-                return res.status(400).json({ message: "Invalid ID" })
-            }
             
             const { title, description, price, stock, category, thumbnail } = req.body;
 
@@ -93,11 +83,6 @@ class ProductController {
     async deleteProduct(req, res) {
         try {
             const { id } = req.params;
-            const isValidId = isValidObjectId(id);
-    
-            if (!isValidId) {
-                return res.status(400).json({ message: "Invalid ID" })
-            }
             
             const product = await productService.deleteProduct(id);
 

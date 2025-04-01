@@ -47,12 +47,6 @@ class ApiUserController {
     try {
       const { id } = req.params;
 
-      const isValidId = isValidObjectId(id);
-
-      if (!isValidId) {
-        return res.status(400).json({ message: "ID invalido" })
-      }
-
       const user = await userService.updateUser(id, req.body);
       res.json(user);
     } catch (err) {
@@ -63,12 +57,6 @@ class ApiUserController {
   async deleteUser(req, res) {
     try {
       const { id } = req.params;
-
-      const isValidId = isValidObjectId(id);
-
-      if (!isValidId) {
-        return res.status(400).json({ message: "ID invalido" })
-      }
 
       await userService.deleteUser(id);
       res.json({ message: "Usuario eliminado" });

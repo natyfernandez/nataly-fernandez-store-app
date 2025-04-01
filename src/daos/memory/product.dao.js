@@ -3,14 +3,12 @@ import { v4 as uuid } from "uuid";
 const products = [];
 
 export class ProductDao {
-    async getAllProducts({ page, limit }) {
-        const start = (Number(page) - 1) * Number(limit);
-        const end = start + Number(limit);
-        return products.slice(start, end);
+    async getAllProducts() {
+        return products;
     }
 
     async getProductById({ pid }) {
-        return products.find(product => product.id === pid);
+        return products.find((product) => product.id === pid);
     }
 
     async create({ product }) {
