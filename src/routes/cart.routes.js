@@ -1,17 +1,18 @@
 import { Router } from "express";
 
 import { cartController } from "../controllers/cart.controller.js";
+import { validateId } from "../middlewares/validate.middleware.js";
 
 export const cartRouter = Router();
 
 cartRouter.get("/", cartController.viewCart);
 
-cartRouter.get("/:cid", cartController.getCartById);
+cartRouter.get("/:cid", validateId, cartController.getCartById);
 
-cartRouter.post("/:cid/product/:pid", cartController.addToCart);
+cartRouter.post("/:cid/product/:pid", validateId, cartController.addToCart);
 
-cartRouter.put("/:cid/products/:pid", cartController.updateCart);
+cartRouter.put("/:cid/products/:pid", validateId, cartController.updateCart);
 
-cartRouter.delete("/:cid/product/:pid", cartController.deleteProductInCart);
+cartRouter.delete("/:cid/product/:pid", validateId, cartController.deleteProductInCart);
 
-cartRouter.delete("/:cid", cartController.deleteCart);
+cartRouter.delete("/:cid", validateId, cartController.deleteCart);

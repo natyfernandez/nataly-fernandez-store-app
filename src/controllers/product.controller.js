@@ -31,13 +31,16 @@ class ProductController {
 
     async createProduct(req, res) {
         try {
-            if (!req.file) {
-                return res.status(400).json({ error: "Imagen requerida" });
-            }
-
             const { title, description, price, stock, category } = req.body;
-            const thumbnail = `./assets/images/${req.file.filename}`;
-
+            
+            let thumbnail;
+            
+            if (!req.file) {
+                thumbnail = './assets/images/default.png';
+            } else {
+                thumbnail = `./assets/images/${req.file.filename}`;
+            }
+    
             const product = await productService.create({
                 product: {
                     title,
@@ -48,12 +51,12 @@ class ProductController {
                     thumbnail
                 },
             });
-
+    
             res.status(201).json(product);
         } catch (error) {
             res.status(500).json({ message: "Error al crear un producto" });
         }
-    }
+    }    
 
     async updateProduct(req, res) {
         try {

@@ -1,40 +1,20 @@
-import { cartsModel } from './../models/carts.model.js';
-
-const CART_EXPIRATION_DAYS = 20;
+import { cartDao } from '../daos/index.dao.js';
 
 export class CartService {
     async getCartById({ cid }) {
-        return cartsModel.findById(cid).populate("products.product");
+        return await cartDao.getCartById({ cid })
     }
-
     async getCartByUser({ user }) {
-        return cartsModel.findOne({ user });
+        return await cartDao.getCartByUser({ user })
     }
-
     async createCart({ user }) {
-        return cartsModel.create({ user, products: [] });
+        return await cartDao.createCart({ user })
     }
-
     async createNewCart() {
-        return cartsModel.create({ products: [] });
+        return await cartDao.createNewCart()
     }
-
     async updateCart({ id }) {
-        return cartsModel.updateOne({ _id: id }, { products: [] });
-    }
-
-    // 🛒 Vaciar carritos después de 20 días sin actividad
-    async clearExpiredCarts() {
-        try {
-            const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() - CART_EXPIRATION_DAYS);
-
-            await cartsModel.updateMany({}, { $set: { products: [] } });
-
-            console.log("🛒 Carritos vaciados después de 20 días");
-        } catch (error) {
-            console.error("❌ Error al vaciar carritos:", error.message);
-        }
+        return await cartDao.updateCart({ id })
     }
 }
 

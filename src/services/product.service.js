@@ -1,20 +1,23 @@
-import { productsModel } from './../models/products.model.js';
+import { productDao } from '../daos/index.dao.js';
 
-export class ProductService {
-    async getAllProducts({page, limit}){
-        return productsModel.paginate({}, { page: Number(page), limit: Number(limit) })
+class ProductService {
+    async getAllProducts({ page, limit }) {
+        return await productDao.getAllProducts({ page, limit })
     }
-    async getProductById({pid}){
-        return productsModel.findById(pid)
+    async getProductById({ pid }) {
+        return await productDao.getProductById({ pid })
     }
-    async create ({product}){
-        return productsModel.create(product)
+    async create({ product }) {
+        return await productDao.create({ product })
     }
-    async updateProduct ({id, product}){
-        return productsModel.findByIdAndUpdate(id, { product })
+    async updateProduct({ id, product }) {
+        return await productDao.updateProduct({ id, product })
     }
-    async deleteProduct ({id}){
-        return productsModel.findByIdAndDelete(id)
+    async deleteProduct({ id }) {
+        return await productDao.deleteProduct({ id })
+    }
+    async isValidId({ id }) {
+        return await productDao.isValidId({ id });
     }
 }
 

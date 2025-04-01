@@ -1,31 +1,24 @@
-import { userModel } from "../models/user.model.js";
+import { userDao } from "../daos/index.dao.js";
 
 export class UserService {
-
     async getAllUsers() {
-        return userModel.find()
+        return await userDao.getAllUsers()
     }
-
     async getUserById({ id }) {
-        return userModel.findById(id).populate('cart.products.product')
+        return await userDao.getUserById({ id })
     }
-    
     async getUserByEmail({ email }) {
-        return userModel.findOne({email}).lean()
+        return await userDao.getUserByEmail({ email })
     }
-
     async createUser({ user }) {
-        return userModel.create(user)
+        return await userDao.createUser({ user })
     }
-
     async updateUser({ id, user }) {
-        return userModel.findByIdAndUpdate(id, { user }, { new: true })
+        return await userDao.updateUser({ id, user })
     }
-
     async deleteUser({ id, user }) {
-        return userModel.findByIdAndDelete(id)
+        return await userDao.deleteUser({ id, user })
     }
-
 }
 
 export const userService = new UserService;

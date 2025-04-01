@@ -1,15 +1,17 @@
 import { Router } from 'express';
 
 import { apiUserController } from './../controllers/api.users.controller.js';
+import { validate, validateId } from '../middlewares/validate.middleware.js';
+import { userDto } from './../dtos/user.dto.js';
 
 export const apiUserRouter = Router()
 
-apiUserRouter.post("/", apiUserController.createUser)
-
 apiUserRouter.get("/", apiUserController.getAllUsers)
 
-apiUserRouter.put("/:id", apiUserController.updateUser)
+apiUserRouter.post("/", validate(userDto), apiUserController.createUser)
 
-apiUserRouter.delete("/:id", apiUserController.deleteUser)
+apiUserRouter.put("/:id", validateId, apiUserController.updateUser)
+
+apiUserRouter.delete("/:id", validateId, apiUserController.deleteUser)
 
 apiUserRouter.post("/login", apiUserController.login)

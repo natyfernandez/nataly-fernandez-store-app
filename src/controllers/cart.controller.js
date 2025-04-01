@@ -1,5 +1,3 @@
-import { isValidObjectId } from "mongoose";
-
 import { cartService } from './../services/cart.service.js';
 import { productService } from "../services/product.service.js";
 
@@ -36,11 +34,6 @@ class CartController {
       });
 
       const { cid } = req.params;
-      const isValidId = isValidObjectId(cid);
-
-      if (!isValidId) {
-        return res.status(400).json({ message: "Invalid ID" })
-      }
       const cart = await cartService.getCartById({ cid });
 
       if (!cart) {

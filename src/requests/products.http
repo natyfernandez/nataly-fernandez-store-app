@@ -1,0 +1,17 @@
+### GET Products
+
+GET  http://localhost:5000/api/products/
+
+### POST Products
+
+POST http://localhost:5000/api/products/
+Content-Type: application/json
+
+{
+    "title": "Anillo",
+    "description": "Lorem ipsum",
+    "price": 123,
+    "stock": 40,
+    "category": "Anillos",
+    "thumbnail": "/assets/images/anillo-platino.webp"
+}
