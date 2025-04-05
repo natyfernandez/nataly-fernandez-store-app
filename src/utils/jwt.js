@@ -12,7 +12,14 @@ export function verifyToken(token) {
         return decoded;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-            throw new Error("Token expirado");
+            res.status(401).render("session-expired", {
+                isSession: false,
+                cartUser: null,
+                cartQuantity: 0,
+                title: "Sesión expirada",
+                homeUrl: "#"
+            });
+            res.clearCookie("jwt");
         }
         throw new Error(`⛔ : ${error}`);
     }
@@ -32,7 +39,7 @@ export function authenticate(req, res, next) {
         req.user = decoded;
         next();
     } catch (error) {
-        if (error.message === "Token expirado") {
+        if (error.name === "TokenExpiredError") {
             res.status(401).render("session-expired", {
                 isSession: false,
                 cartUser: null,
@@ -47,4 +54,18 @@ export function authenticate(req, res, next) {
             error: "Token inválido",
         });
     }
+}
+
+export function authorize(roles = []) {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+
+        if (roles.length && !roles.includes(req.user.role)) {
+            return res.status(403).json({ message: "No autorizado" });
+        }
+
+        next();
+    };
 }

@@ -97,6 +97,47 @@ class ViewsController {
             user: userData
         });
     }
+
+    async products(req, res) {
+        try {
+            const token = req.cookies.jwt;
+            if (!token) {
+                return res.redirect("/login");
+            }
+
+            const decoded = verifyToken(token);
+            const userId = decoded.id; // Asegurate que es 'id', no '_id'
+
+            const userData = await userService.getUserByEmail({ email: decoded.email });
+            let cart = await cartService.getCartByUser({ user: userId });
+
+            if (!cart) {
+                cart = await cartService.createCart({ user: userId });
+            }
+
+            const cartQuantity = cart.products.reduce((acc, item) => acc + item.quantity, 0);
+
+            res.render("addProducts", {
+                isSession: true,
+                cartUser: cart._id,
+                cartQuantity,
+                title: "Productos",
+                homeUrl: "/",
+                user: userData
+            });
+        } catch (error) {
+            if (error.name === "TokenExpiredError") {
+                res.clearCookie("jwt");
+                return res.redirect("/login");
+            }
+
+            return res.status(500).json({
+                message: "Error al ingresar al admin de productos",
+                error: error.message
+            });
+        }
+    }
+
 }
 
 export const viewsController = new ViewsController();

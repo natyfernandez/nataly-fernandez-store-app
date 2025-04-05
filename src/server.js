@@ -56,26 +56,6 @@ app.set("views", path.resolve(__dirname, "./views"));
 // Routes
 app.use("/", routes);
 
-// Configuración de cookies
-app.get("/cookies", (req, res) => {
-    const token = jwt.sign(
-        {
-            id: "abcd",
-            username: "test",
-            role: "admin",
-        },
-        CONFIG.SECRET_KEY,
-        { expiresIn: "5m" }
-    );
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 60,
-    });
-
-    res.json({ message: "Cookie set", token });
-});
-
 // Connect to MongoDB
 if (CONFIG.PERSISTENCE === PERSISTENCE.MONGODB) {
     mongodbProvider

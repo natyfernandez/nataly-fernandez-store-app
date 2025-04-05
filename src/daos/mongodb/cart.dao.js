@@ -15,8 +15,14 @@ export class CartDao {
     async createNewCart() {
         return cartsModel.create({ products: [] });
     }
-    async updateCart({ id }) {
-        return cartsModel.updateOne({ _id: id }, { products: [] });
+    async updateCart({ cid, products }) {
+        if (!cid) {
+            throw new Error(`Id del carrito no encontrado`);
+        }
+        if (!products) {
+            return { message: "Productos no encontrados al vaciar carrito" };
+        }
+        return cartsModel.updateOne({ _id: cid }, { products });
     }
 
     // 🛒 Vaciar carritos después de 20 días sin actividad

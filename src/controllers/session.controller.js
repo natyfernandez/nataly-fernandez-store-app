@@ -7,13 +7,13 @@ import { CONFIG } from './../config/config.js';
 
 class SessionController {
     async register(req, res) {
-        const { first_name, last_name, age, email, password } = req.body;
-
-        if (!first_name || !last_name || !age || !email || !password) {
-            return res.status(400).json({ message: "Todos los campos son requeridos" });
-        }
-
         try {
+            const { first_name, last_name, age, email, password } = req.body;
+
+            if (!first_name || !last_name || !age || !email || !password) {
+                return res.status(400).json({ message: "Todos los campos son requeridos" });
+            }
+
             const hashedPassword = await hashPassword(password);
 
             const newCart = await cartService.createNewCart();
@@ -28,6 +28,13 @@ class SessionController {
                 },
             });
 
+            // ENVIO DE USUARIO POR MAIL 👇
+            await mailService.sendMail({
+                to: user.email,
+                subject: "Bienvenido a Coder Eats!",
+                type: EMAIL_TYPES.WELCOME,
+            });
+            
             res.redirect("/login");
         } catch (error) {
             res.status(500).json({ message: "Error interno", error: error.message });
@@ -58,7 +65,7 @@ class SessionController {
                     role: "user",
                 },
                 CONFIG.SECRET_KEY,
-                { expiresIn: "5m" }
+                { expiresIn: "60m" }
             );
 
             res.cookie("jwt", token, {

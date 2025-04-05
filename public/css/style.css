@@ -1,3 +1,33 @@
+body{
+    background-color: #1a1a1a;
+}
+header nav{
+    background-color: #111111;
+}
+h1, h2, h3, h4, p, li{
+    color: #FDF6F0;
+}
+.btn{
+    background-color: #F5E3C3;
+    color: #1E1E1E;
+}
+.btn:hover{
+    background-color: #f1c8b6;
+}
+.card{
+    background-color: #111111;
+}
+
+table{
+    background-color: #111111;
+}
+thead{
+    color: #F5E3C3;
+}
+tbody{
+    background-color: #F3E5AB;
+}
+
 i ~ .badgeCart{
     font-size: 11px;
     font-weight: 500;

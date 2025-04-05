@@ -24,13 +24,17 @@
                 <td>{{this.quantity}}</td>
                 <td>
                     <form class="delete-product-in-cart" data-cart-id="{{../cartUser}}" data-product-id="{{this.product._id}}" enctype="multipart/form-data">
-                        <button type="submit"><i class="material-icons">delete_forever</i></button>
+                        <button class="btn" type="submit"><i class="material-icons">delete_forever</i></button>
                     </form>
                 </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+
+    <form class="buy-products" data-cart-id="{{cartUser}}" enctype="multipart/form-data">
+        <button class="btn waves-effect waves-light" type="submit">Finalizar compra</button>
+    </form>
     {{else}}
         <p>Carrito vacio <a href="/">agrega productos</a></p>
     {{/if}}

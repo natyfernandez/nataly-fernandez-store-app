@@ -1,19 +1,21 @@
 import { Router } from "express";
 
-import { viewsRoutes } from './views.routes.js';
 import { apiRoutes } from "./api.routes.js";
 import { cartRouter } from "./cart.routes.js";
 import { userRouter } from './users.routes.js';
-import { authenticate } from "../utils/jwt.js";
+import { viewsRoutes } from './views.routes.js';
+import { ticketRoutes } from './ticket.routes.js';
+import { authenticate, authorize } from "../utils/jwt.js";
 
 export const routes = Router();
 
 routes.use("/", viewsRoutes);
+routes.use("/api", apiRoutes);
 routes.use("/users", userRouter);
 routes.use("/carts", cartRouter);
-routes.use("/api", apiRoutes);
+routes.use("/tickets", ticketRoutes);
 
-routes.get("/admin", authenticate, (req, res) => {
+routes.get("/admin", authenticate, authorize(["admin"]), (req, res) => {
     res.json({ message: 'Ruta de admin' });
 });
 

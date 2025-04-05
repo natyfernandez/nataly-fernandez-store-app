@@ -13,8 +13,8 @@ export class CartService {
     async createNewCart() {
         return await cartDao.createNewCart()
     }
-    async updateCart({ id }) {
-        return await cartDao.updateCart({ id })
+    async updateCart({ cid, products }) {
+        return await cartDao.updateCart({ cid, products })
     }
 }
 

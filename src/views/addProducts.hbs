@@ -1,0 +1,48 @@
+<main>
+    <h1>Crear producto</h1>
+    
+    <form id="form" class="col s12" action="/api/products" enctype="multipart/form-data" method="post">
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="title" name="title" type="text">
+                <label for="title">Titulo</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="price" name="price" type="number">
+                <label for="price">Precio</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="description" name="description" type="text">
+                <label for="description">Descripción</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="stock" name="stock" type="number">
+                <label for="stock">Stock</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="category" name="category" type="text">
+                <label for="category">Categoría</label>
+            </div>
+        </div>
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Portada</span>
+                <input id="thumbnail" name="image" type="file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Carga la imagen del producto">
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light" type="submit">Enviar
+            <i class="material-icons right">send</i>
+        </button>
+    </form>
+</main>
