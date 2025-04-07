@@ -10,16 +10,10 @@ export const CONFIG = {
     JWT_SECRET: process.env.JWT_SECRET,
     PERSISTENCE: process.env.PERSISTENCE || PERSISTENCE.MEMORY,
     MAIL: {
-        USER: process.env.NODEMAILER_USER,
-        PASSWORD: process.env.NODEMAILER_PASSWORD,
-        HOST: process.env.NODEMAILER_HOST,
-        PORT: process.env.NODEMAILER_PORT,
         FROM: process.env.NODEMAILER_FROM,
-    },
-    SMS: {
-        ACCOUNT_SID: process.env.TWILIO_SID,
-        AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
-        PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
-    },
-
+        USER: process.env.NODEMAILER_USER,
+        HOST: process.env.NODEMAILER_HOST,
+        PORT: process.env.NODEMAILER_PORT || 587,
+        PASSWORD: process.env.NODEMAILER_PASSWORD,
+    }
 }

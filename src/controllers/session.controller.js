@@ -4,6 +4,8 @@ import { userService } from "../services/user.service.js";
 import { hashPassword, verifyPassword } from "../utils/password.utils.js";
 
 import { CONFIG } from './../config/config.js';
+import { EMAIL_TYPES } from "../common/constants/email-types.js";
+import { mailService } from "../services/mail.service.js";
 
 class SessionController {
     async register(req, res) {
@@ -31,7 +33,7 @@ class SessionController {
             // ENVIO DE USUARIO POR MAIL 👇
             await mailService.sendMail({
                 to: user.email,
-                subject: "Bienvenido a Coder Eats!",
+                subject: "Bienvenido a Luxwel!",
                 type: EMAIL_TYPES.WELCOME,
             });
             

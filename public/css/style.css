@@ -1,7 +1,7 @@
 body{
     background-color: #1a1a1a;
 }
-header nav{
+header nav, table, .card{
     background-color: #111111;
 }
 h1, h2, h3, h4, p, li{
@@ -14,18 +14,17 @@ h1, h2, h3, h4, p, li{
 .btn:hover{
     background-color: #f1c8b6;
 }
-.card{
-    background-color: #111111;
-}
 
-table{
-    background-color: #111111;
-}
-thead{
+tbody, thead{
     color: #F5E3C3;
 }
-tbody{
-    background-color: #F3E5AB;
+
+input:-internal-autofill-selected{
+    background-color: #1a1a1a !important;
+    color: #FDF6F0;
+}
+input{
+    color: #FDF6F0;
 }
 
 i ~ .badgeCart{
