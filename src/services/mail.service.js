@@ -18,7 +18,7 @@ class MailService {
     });
   }
 
-  async getMessageTemplate({ type, email }) {
+  async getMessageTemplate({ type, email, resetLink }) {
     let message = `
     <html>
       <head>
@@ -30,11 +30,12 @@ class MailService {
         <div style="background-color: #111111; padding: 20px; text-align: center;">
           <img src="cid:logo" alt="Logo de Luxwel" style="width: 120px; height: auto;" />
         </div>
-  
+
         <!-- CONTENIDO PRINCIPAL -->
         <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
     `;
-  
+
+    // Lógica para el tipo de correo
     switch (type) {
       case EMAIL_TYPES.WELCOME:
         message += `
@@ -43,21 +44,30 @@ class MailService {
           <p style="color: #555;">Gracias por registrarte en nuestra tienda.</p>
         `;
         break;
+      
+      case EMAIL_TYPES.RESTORE_PASSWORD:
+        message += `
+          <h2 style="color: #333;">Hola, ${email}!</h2>
+          <h3 style="color: darkblue;">Se ha solicitado restaurar su contraseña</h3>
+          <button><a href="${resetLink}">Haz clic aquí para cambiar tu contraseña</a></button>
+          <p style="color: #555;">Este enlace expirará en 1 hora, si no solicitó la restauración ignore el mail.</p>
+        `;
+        break;
     }
-  
+
     message += `
         </div>
       </body>
     </html>
     `;
-  
+
     return message;
   }
   
   // 👇 A QUIEN VA ENVIADO - ASUNTO - CUERPO DEL MAIL
-  async sendMail({ to, subject, type }) {
+  async sendMail({ to, subject, type, resetLink }) {
     try {
-      const html = await this.getMessageTemplate({ type, email: to });
+      const html = await this.getMessageTemplate({ type, email: to, resetLink });
 
       // INFORMACION DEL ENVÍO DEL MAIL
       const info = await this.transporter.sendMail({

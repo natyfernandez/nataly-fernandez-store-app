@@ -19,6 +19,9 @@ export class UserService {
     async deleteUser({ id, user }) {
         return await userDao.deleteUser({ id, user })
     }
+    async updateUserPassword({ id, password }) {
+        return await userDao.updateUserPassword({ id, password });
+    }
 }
 
 export const userService = new UserService;

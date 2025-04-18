@@ -38,4 +38,12 @@ export class UserDao {
         
         return users.splice(index, 1)[0];
     }
+
+    async updateUserPassword({ id, password }) {
+        const index = users.findIndex(user => user.id === id);
+        if (index === -1) return null;
+    
+        users[index].password = password;
+        return users[index];
+    }    
 }

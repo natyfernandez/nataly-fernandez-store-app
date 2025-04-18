@@ -19,4 +19,7 @@ export class UserDao {
     async deleteUser({ id, user }) {
         return userModel.findByIdAndDelete(id)
     }
+    async updateUserPassword({ id, password }) {
+        return await userModel.findByIdAndUpdate(id, { password });
+    }    
 }

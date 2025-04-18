@@ -16,3 +16,4 @@ viewsRoutes.get("/profile", authenticate, viewsController.profile);
 
 viewsRoutes.get("/products", authenticate, authorize(["admin"]), viewsController.products);
 
+viewsRoutes.get("/restore-password", viewsController.session);
