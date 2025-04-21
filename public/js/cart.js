@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 if (response.ok) {
-                    window.location.href = `/carts/${cartId}/`;
-                    const ticket = await response.text();
-                    console.log(`Compra realizada!, ticket: ${ticket}`)
+                    const data = await response.json();
+                    const ticket = data.newTicket;
+                    window.location.href = `/tickets/${ticket._id}`; 
                 } else {
                     const errorData = await response.text();
                     console.log(`Error: ${errorData}`);

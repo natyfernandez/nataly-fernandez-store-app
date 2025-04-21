@@ -18,14 +18,43 @@ class TicketController {
 
     async getTicketById(req, res) {
         try {
-            const { id } = req.params;
-            const ticket = await ticketService.getTicketById(id);
+            const token = req.cookies.jwt;
+            let isSession = false;
+            let cartQuantity = 0;
+            let cart = null;
 
-            if (!ticket) {
-                return res.status(404).json({ error: "Ticket not found" });
+            if (token) {
+                const decoded = verifyToken(token);
+                isSession = true;
+
+                cart = await cartService.getCartByUser({ user: decoded._id });
+
+                cartQuantity = cart.products.length > 0
+                    ? cart.products.reduce((acc, item) => acc + item.quantity, 0)
+                    : 0;
             }
 
-            res.status(200).json({ ticket });
+            const { id } = req.params;
+            const ticket = await ticketService.getTicketById({ id });
+
+            if (!ticket) {
+                return res.status(404).json({ error: "Ticket no encontrado" });
+            }
+
+            const ticketItems = ticket.products.map(item => ({
+                product: item.product,
+                quantity: item.quantity
+            }));
+
+            res.status(200).render("single-ticket", {
+                isSession,
+                cartUser: cart._id,
+                cartQuantity,
+                ticket,
+                ticketItems,
+                title: "Ticket",
+                homeUrl: "/",
+            });
         } catch (error) {
             res.status(500).json({
                 error: "Internal server error",
@@ -40,36 +69,36 @@ class TicketController {
             if (!token) {
                 return res.status(401).json({ error: "Unauthorized" });
             }
-    
+
             const decoded = verifyToken(token);
             const { cid } = req.params;
-    
+
             const cart = await cartService.getCartById({ cid });
             if (!cart) {
                 return res.status(404).json({ message: "Carrito no encontrado" });
             }
-    
+
             if (cart.products.length === 0) {
                 return res.status(400).json({ message: "El carrito está vacío" });
             }
-    
+
             const purchasedItems = [];
             const notPurchasedItems = [];
-    
+
             let totalAmount = 0;
-    
+
             for (const item of cart.products) {
                 const product = item.product;
                 if (product.stock > 0) {
                     if (product.stock >= item.quantity) {
                         product.stock -= item.quantity;
                         await product.save();
-        
+
                         purchasedItems.push({
                             product: product._id.toString(),
                             quantity: item.quantity
                         });
-        
+
                         totalAmount += product.price * item.quantity;
                     } else {
                         item.quantity -= product.stock;
@@ -94,37 +123,37 @@ class TicketController {
                     });
                 }
             }
-    
+
             if (purchasedItems.length === 0) {
                 return res.status(400).json({
                     message: "No se pudieron procesar los productos por falta de stock",
                     notPurchasedItems
                 });
             }
-    
+
             const ticket = {
                 amount: totalAmount,
                 purchaser: decoded.email,
                 products: purchasedItems
             };
-    
+
             const { error } = ticketDto.validate(ticket);
             if (error) {
                 return res.status(400).json({ details: error.details });
             }
-    
+
             const newTicket = await ticketService.createTicket({ ticket });
-    
+
             await cartService.updateCart({ cid, products: notPurchasedItems });
-    
-            res.status(201).json({ newTicket, notPurchasedItems });
+
+            res.status(201).json({ newTicket });
         } catch (error) {
             res.status(500).json({
                 error: "Internal server error",
                 details: error.message,
             });
         }
-    }    
+    }
 
     async resolve(req, res) {
         try {

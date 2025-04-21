@@ -43,7 +43,7 @@ class ProductController {
                 return res.status(404).json({ message: 'Producto no encontrado' });
             }            
 
-            res.status(200).render("single", {
+            res.status(200).render("single-product", {
                 isSession,
                 cartUser: isSession ? cart._id : null,
                 cartQuantity,

@@ -31,7 +31,6 @@ class SessionController {
                 },
             });
 
-            // ENVIO DE USUARIO POR MAIL 👇
             await mailService.sendMail({
                 to: user.email,
                 subject: "Bienvenido a Luxwel!",

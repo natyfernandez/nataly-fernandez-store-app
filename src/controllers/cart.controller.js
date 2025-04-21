@@ -157,7 +157,7 @@ class CartController {
       res.status(200).render("cart", {
         cartUser: updatedCart._id,
         cartQuantity,
-        cartProducts: updatedCart.products.map(item => item.product),
+        cartItems: updatedCart.products.map(item => item.product),
         title: "Carrito",
         homeUrl: "/",
         productsUrl: "/realtimeproducts"

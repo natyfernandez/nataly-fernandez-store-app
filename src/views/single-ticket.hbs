@@ -1,0 +1,28 @@
+<main>
+    <h1 class="title">¡Pedido realizado!</h1>
+    <p class="amount"><strong>{{ticket.amount}}</strong></p>
+    <p class="status">{{ticket.status}}</p>
+    <p class="date">{{ticket.purchase_datetime}}</p>
+    <p class="code">Codigo: {{ticket.code}}</p>
+    <p class="purchaser">{{ticket.purchaser}}</p>
+
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Precio</th>
+                <th>Unidades</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{#each ticketItems}}
+            <tr>
+                <td>{{this.product.title}}</td>
+                <td>{{this.product.price}}</td>
+                <td>{{this.quantity}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</main>

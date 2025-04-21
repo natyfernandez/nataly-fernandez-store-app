@@ -6,7 +6,7 @@ export class TicketDao {
     }
 
     async getTicketById({ id }) {
-        return await ticketModel.findById(id);
+        return await ticketModel.findById(id).populate("products.product");
     }
 
     async createTicket({ ticket }) {
