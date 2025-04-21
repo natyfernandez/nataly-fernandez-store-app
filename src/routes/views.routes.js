@@ -3,6 +3,7 @@ import { Router } from "express";
 import { authenticate, authorize } from "../utils/jwt.js";
 import { checkUserCart } from "../middlewares/cart.middleware.js";
 import { viewsController } from "../controllers/views.controller.js";
+import { validateId } from "../middlewares/validate.middleware.js";
 
 export const viewsRoutes = Router();
 

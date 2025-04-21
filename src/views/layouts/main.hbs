@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,24 +16,85 @@
     <header>
         <nav>
             <div class="nav-wrapper container">
-                <a href="{{homeUrl}}" class="brand-logo"><img src="/assets/images/logo.svg" alt="Luxwel logo" height="60px"></a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a href="{{homeUrl}}">Home</a></li>
+                <a href="{{homeUrl}}" class="brand-logo"><img src="/assets/images/logo.svg" alt="Luxwel logo"
+                        height="60px"></a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right">
+                    <li><a href="/carts/{{cartUser}}"><i class="material-icons">shopping_cart</i><span
+                                style="position:absolute" class="badgeCart">{{{cartQuantity}}}</span></a></li>
+                </ul>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="{{homeUrl}}">Inicio</a></li>
                     {{#if isSession}}
-                        <li><a href="/profile"><i class="material-icons">person</i></a></li>
+                    <li><a href="/profile"><i class="material-icons">person</i></a></li>
                     {{else}}
-                        <li><a href="/login">Iniciar Sesión</a></li>
-                        <li><a href="/register">Registrese</a></li>
+                    <li><a href="/login">Iniciar Sesión</a></li>
+                    <li><a href="/register">Registrese</a></li>
                     {{/if}}
-                    <li><a href="/carts/{{cartUser}}"><i class="material-icons">shopping_cart</i><span style="position:absolute" class="badgeCart">{{{cartQuantity}}}</span></a></li>
                 </ul>
             </div>
         </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li><a href="{{homeUrl}}">Inicio</a></li>
+            {{#if isSession}}
+            <li><a href="/profile">Mi cuenta</a></li>
+            {{else}}
+            <li><a href="/login">Iniciar Sesión</a></li>
+            <li><a href="/register">Registrese</a></li>
+            {{/if}}
+        </ul>
     </header>
-    <div class="container">
+    <div class="container main-content">
         {{{body}}}
     </div>
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m4">
+                    <h5 class="white-text">Luxwel</h5>
+                    <p class="grey-text text-lighten-4">Tu tienda de joyas.</p>
+                </div>
+                <div class="col s12 m4">
+                    <h5 class="white-text">Links</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                    </ul>
+                </div>
+                <div class="col s12 m4">
+                    <h5 class="white-text">Links</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container row margin-0">
+                <div class="col">
+                    © 2025 Luxwel, by Nataly Fernandez.
+                </div>
+                <div class="col right">
+                    <div class="row margin-0">
+                        <a class="grey-text text-lighten-4 col" href="https://instagram.com" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a class="grey-text text-lighten-4 col" href="mailto:natalyy.fernandez1@gmail.com"><i class="fas fa-envelope fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.sidenav');
+            var options = {};
+            var instances = M.Sidenav.init(elems, options);
+        });
+    </script>
 </body>
 
 </html>

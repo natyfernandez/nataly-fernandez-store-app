@@ -1,6 +1,6 @@
 <main>
     <div>
-        <h1>Home</h1> <a class="btn waves-effect waves-light" href="/products/"><i class="material-icons">add</i></a>
+        <h1>Inicio</h1> <a class="btn waves-effect waves-light" href="/products/"><i class="material-icons">add</i></a>
     </div>
 
     <div class="row">
@@ -16,13 +16,7 @@
                     <p>{{this.description}}</p>
                 </div>
                 <div class="card-action">
-                    {{#if ../isSession}}
-                        <form class="add-to-cart-form" action="/carts/{{../cartUser}}/product/{{this._id}}" enctype="multipart/form-data" method="POST">
-                            <button class="btn waves-effect waves-light" type="submit">Agregar al Carrito</button>
-                        </form>
-                    {{else}}
-                        <a class="btn waves-effect waves-light" href="">Ver producto</a>
-                    {{/if}}
+                    <a class="btn waves-effect waves-light" href="/products/{{this._id}}">Ver producto</a>
                 </div>
             </div>
         </div> 

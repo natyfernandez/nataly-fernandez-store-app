@@ -1,6 +1,6 @@
-import { isValidObjectId } from "mongoose";
-
+import { cartService } from "../services/cart.service.js";
 import { productService } from "../services/product.service.js";
+import { verifyToken } from "../utils/jwt.js";
 
 class ProductController {
     async getAllProducts(req, res) {
@@ -15,10 +15,42 @@ class ProductController {
 
     async getProductById(req, res) {
         try {
-            const { id } = req.params;
+            const token = req.cookies.jwt;
+            let isSession = false;
+            let cartQuantity = 0;
+            let cart = null;
 
-            const products = await productService.getProductById({id});
-            res.status(200).json(products);
+            if (token) {
+                const decoded = verifyToken(token);
+                isSession = true;
+
+                cart = await cartService.getCartByUser({ user: decoded._id });
+
+                cartQuantity = cart.products.length > 0
+                    ? cart.products.reduce((acc, item) => acc + item.quantity, 0)
+                    : 0;            
+            }
+
+            const { pid } = req.params;
+
+            if (!pid) {
+                return res.status(404).json({ message: 'ID no proporcionado' });
+            }            
+
+            const product = await productService.getProductById({ pid });
+            
+            if (!product) {
+                return res.status(404).json({ message: 'Producto no encontrado' });
+            }            
+
+            res.status(200).render("single", {
+                isSession,
+                cartUser: isSession ? cart._id : null,
+                cartQuantity,
+                title: product.title,
+                product,
+                homeUrl: "/",
+            });
         } catch (error) {
             res.status(500).json({ message: 'Error al obtener el producto' });
         }

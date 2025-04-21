@@ -7,5 +7,5 @@ import { productRouter } from "./product.routes.js";
 export const apiRoutes = Router();
 
 apiRoutes.use("/users", apiUserRouter);
-apiRoutes.use("/products", productRouter);
 apiRoutes.use("/sessions", sessionRouter);
+//apiRoutes.use("/products", productRouter);

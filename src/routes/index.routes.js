@@ -6,6 +6,7 @@ import { userRouter } from './users.routes.js';
 import { viewsRoutes } from './views.routes.js';
 import { ticketRoutes } from './ticket.routes.js';
 import { authenticate, authorize } from "../utils/jwt.js";
+import { productRouter } from './product.routes.js';
 
 export const routes = Router();
 
@@ -14,6 +15,7 @@ routes.use("/api", apiRoutes);
 routes.use("/users", userRouter);
 routes.use("/carts", cartRouter);
 routes.use("/tickets", ticketRoutes);
+routes.use("/products", productRouter);
 
 routes.get("/admin", authenticate, authorize(["admin"]), (req, res) => {
     res.json({ message: 'Ruta de admin' });

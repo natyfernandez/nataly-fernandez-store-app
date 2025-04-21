@@ -8,7 +8,7 @@ import { authenticate, authorize } from "../utils/jwt.js";
 
 export const productRouter = Router();
 
-productRouter.get("/:id", validateId, productController.getProductById);
+productRouter.get("/:pid", validateId, productController.getProductById);
 
 productRouter.post("/", authenticate, authorize(["admin"]), uploader.single("image"), validate(productDto), productController.createProduct);
 

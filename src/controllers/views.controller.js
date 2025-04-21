@@ -106,7 +106,7 @@ class ViewsController {
             }
 
             const decoded = verifyToken(token);
-            const userId = decoded.id; // Asegurate que es 'id', no '_id'
+            const userId = decoded.id;
 
             const userData = await userService.getUserByEmail({ email: decoded.email });
             let cart = await cartService.getCartByUser({ user: userId });
