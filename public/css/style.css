@@ -1,3 +1,74 @@
+/* Tamaños base (puedes ajustar si querés) */
+:root {
+    --space-0: 0;
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 1.5rem;
+    --space-4: 2rem;
+    --space-5: 3rem;
+  }
+  
+  /* Márgenes */
+  .m-0  { margin: var(--space-0) !important; }
+  .m-1  { margin: var(--space-1) !important; }
+  .m-2  { margin: var(--space-2) !important; }
+  .m-3  { margin: var(--space-3) !important; }
+  .m-4  { margin: var(--space-4) !important; }
+  .m-5  { margin: var(--space-5) !important; }
+  
+  .mt-0 { margin-top: var(--space-0) !important; }
+  .mt-1 { margin-top: var(--space-1) !important; }
+  .mt-2 { margin-top: var(--space-2) !important; }
+  .mt-3 { margin-top: var(--space-3) !important; }
+  .mt-4 { margin-top: var(--space-4) !important; }
+  .mt-5 { margin-top: var(--space-5) !important; }
+  
+  .mb-0 { margin-bottom: var(--space-0) !important; }
+  .mb-1 { margin-bottom: var(--space-1) !important; }
+  .mb-2 { margin-bottom: var(--space-2) !important; }
+  .mb-3 { margin-bottom: var(--space-3) !important; }
+  .mb-4 { margin-bottom: var(--space-4) !important; }
+  .mb-5 { margin-bottom: var(--space-5) !important; }
+  
+  .ml-0 { margin-left: var(--space-0) !important; }
+  .ml-1 { margin-left: var(--space-1) !important; }
+  .ml-2 { margin-left: var(--space-2) !important; }
+  .ml-3 { margin-left: var(--space-3) !important; }
+  .ml-4 { margin-left: var(--space-4) !important; }
+  .ml-5 { margin-left: var(--space-5) !important; }
+  
+  .mr-0 { margin-right: var(--space-0) !important; }
+  .mr-1 { margin-right: var(--space-1) !important; }
+  .mr-2 { margin-right: var(--space-2) !important; }
+  .mr-3 { margin-right: var(--space-3) !important; }
+  .mr-4 { margin-right: var(--space-4) !important; }
+  .mr-5 { margin-right: var(--space-5) !important; }
+  
+  .mx-0 { margin-left: var(--space-0) !important; margin-right: var(--space-0) !important; }
+  .mx-1 { margin-left: var(--space-1) !important; margin-right: var(--space-1) !important; }
+  .mx-2 { margin-left: var(--space-2) !important; margin-right: var(--space-2) !important; }
+  .mx-3 { margin-left: var(--space-3) !important; margin-right: var(--space-3) !important; }
+  .mx-4 { margin-left: var(--space-4) !important; margin-right: var(--space-4) !important; }
+  .mx-5 { margin-left: var(--space-5) !important; margin-right: var(--space-5) !important; }
+  
+  .my-0 { margin-top: var(--space-0) !important; margin-bottom: var(--space-0) !important; }
+  .my-1 { margin-top: var(--space-1) !important; margin-bottom: var(--space-1) !important; }
+  .my-2 { margin-top: var(--space-2) !important; margin-bottom: var(--space-2) !important; }
+  .my-3 { margin-top: var(--space-3) !important; margin-bottom: var(--space-3) !important; }
+  .my-4 { margin-top: var(--space-4) !important; margin-bottom: var(--space-4) !important; }
+  .my-5 { margin-top: var(--space-5) !important; margin-bottom: var(--space-5) !important; }
+  
+  /* Padding (relleno) */
+  .p-0  { padding: var(--space-0) !important; }
+  .p-1  { padding: var(--space-1) !important; }
+  .p-2  { padding: var(--space-2) !important; }
+  .p-3  { padding: var(--space-3) !important; }
+  .p-4  { padding: var(--space-4) !important; }
+  .p-5  { padding: var(--space-5) !important; }
+  
+  /* Puedes agregar también pt-, pb-, pl-, pr-, px-, py- igual que los márgenes si querés */
+  
+
 body {
     background-color: #1a1a1a;
     margin: 0;
@@ -11,6 +82,11 @@ header nav, table, .card, footer.page-footer, .sidenav{
 .main-content{
     flex: 1 0 auto;
 }
+
+h1{
+    margin: 0 0 20px 0;
+}
+
 h1, h2, h3, h4, p, li, i, a{
     color: #FDF6F0 !important;
 }
@@ -57,6 +133,7 @@ i ~ .badgeCart{
     line-height: 9px;
     text-align: center;
 }
-form .btn{
+form .btn, button.btn{
+    vertical-align: middle;
     line-height: 32px !important;
 }

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title>{{{title}}} | Luxwel - Joyería</title>
+    <title>{{#if title}}{{{title}}} | {{/if}}Luxwel - Joyería</title>
 </head>
 
 <body>
@@ -18,7 +18,7 @@
             <div class="nav-wrapper container">
                 <a href="{{homeUrl}}" class="brand-logo"><img src="/assets/images/logo.svg" alt="Luxwel logo"
                         height="60px"></a>
-                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger mx-2"><i class="material-icons">menu</i></a>
                 <ul class="right">
                     <li><a href="/carts/{{cartUser}}"><i class="material-icons">shopping_cart</i><span
                                 style="position:absolute" class="badgeCart">{{{cartQuantity}}}</span></a></li>

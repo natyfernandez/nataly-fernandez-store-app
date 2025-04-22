@@ -1,6 +1,7 @@
-<main>
-    <div>
-        <h1>Inicio</h1> <a class="btn waves-effect waves-light" href="/products/"><i class="material-icons">add</i></a>
+<main class="section">
+    <div class="row valign-wrapper">
+        <h1 class="col s9 mb-2">Inicio</h1> 
+        <a class="col s3" href="/products/"><button class="btn waves-effect waves-light right"><span class="valign-wrapper">Crear<i class="material-icons">add</i></span></button></a>
     </div>
 
     <div class="row">
@@ -25,11 +26,14 @@
 
     <div class="row">
         {{#if products.prevPage}}
-            <a class="btn waves-effect waves-light" href="/?page={{products.prevPage}}">Anterior</a>
+        <div class="col">
+            <a class="btn col waves-effect waves-light" href="/?page={{products.prevPage}}">Anterior</a>
+        </div>
         {{/if}}
-
         {{#if products.nextPage}}
-            <a class="btn right waves-effect waves-light" href="/?page={{products.nextPage}}">Siguiente</a>
+        <div class="col right">
+            <a class="btn waves-effect waves-light" href="/?page={{products.nextPage}}">Siguiente</a>
+        </div>
         {{/if}}
     </div>
 </main>

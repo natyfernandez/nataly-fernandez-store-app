@@ -43,7 +43,6 @@ class ViewsController {
                 cartUser: isSession ? cart._id : null,
                 products: await productService.getAllProducts({ page: Number(req.query.page || 1), limit: Number(req.query.limit || 6) }),
                 cartQuantity,
-                title: "Home",
                 homeUrl: "#"
             });
 

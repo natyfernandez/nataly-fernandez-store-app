@@ -1,5 +1,5 @@
-<main>
-    <div class="row">
+<main class="section">
+    <div class="row m-0">
         <div class="col s12 m6 thumbnail">
             <img src="{{product.thumbnail}}" class="responsive-img">
         </div>
@@ -7,13 +7,15 @@
             <h1 class="title">{{product.title}}</h1>
             <p class="price"><strong>{{product.price}}</strong></p>
             <p class="description">{{product.description}}</p>
-            {{#if isSession}}
-                <form class="add-to-cart-form" action="/carts/{{cartUser}}/product/{{product._id}}" enctype="multipart/form-data" method="POST">
-                    <button class="btn waves-effect waves-light" type="submit">Agregar al carrito</button>
-                </form>
-            {{else}}
-                <a href="/carts" class="btn waves-effect waves-light" type="submit">Agregar al carrito</a>
-            {{/if}}
+            <div class="mt-3">
+                {{#if isSession}}
+                    <form class="add-to-cart-form" action="/carts/{{cartUser}}/product/{{product._id}}" enctype="multipart/form-data" method="POST">
+                        <button class="btn waves-effect waves-light" type="submit">Agregar al carrito</button>
+                    </form>
+                {{else}}
+                    <a href="/carts" class="btn waves-effect waves-light" type="submit">Agregar al carrito</a>
+                {{/if}}
+            </div>
         </div>
     </div>
 </main>

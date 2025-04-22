@@ -1,18 +1,14 @@
-<div class="card text-bg-primary m-3">
-  <div class="card-header">
-    <h1> Perfil del usuario </h1>
-  </div>
-  <div class="card-body">
+<section class="text-bg-primary section">
+  <h1> Perfil del usuario </h1>
 
-    <ul>
-      <li>{{user.first_name}} {{user.last_name}} </li>
-      <li> {{user.age}} </li>
-      <li>{{user.email}} </li>
-    </ul>
-  </div>
+  <ul>
+    <li>{{user.first_name}} {{user.last_name}} </li>
+    <li> {{user.age}} </li>
+    <li>{{user.email}} </li>
+  </ul>
 
-  <div class="m-3">
+  <div class="mt-3">
     <a href="/" class="btn btn-primary"><i class="material-icons">home</i></a>
     <a href="/api/sessions/logout" class="btn btn-danger"><i class="material-icons">exit_to_app</i></a>
   </div>
-</div>
+</section>

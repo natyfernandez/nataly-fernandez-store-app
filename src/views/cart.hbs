@@ -1,4 +1,4 @@
-<main>
+<main class="section">
     <h1>Carrito</h1>
 
     {{#if isSession}}
@@ -32,7 +32,7 @@
             </tbody>
         </table>
 
-        <form class="buy-products" data-cart-id="{{cartUser}}" enctype="multipart/form-data">
+        <form class="buy-products mt-3" data-cart-id="{{cartUser}}" enctype="multipart/form-data">
             <button class="btn waves-effect waves-light" type="submit">Finalizar compra</button>
         </form>
         {{else}}
